@@ -6,18 +6,28 @@
       <div class="col-8">
         <div class="calculator">
           <div class="calculator-children">
-            <button value="0" @click="selectNumber">0</button>
-            <button value="1" @click="selectNumber">1</button>
-            <button value="2" @click="selectNumber">2</button>
-            <button value="3" @click="selectNumber">3</button>
-            <button value="1" @click="selectNumber">1</button>
-            <button value="1" @click="selectNumber">1</button>
-            <button value="1" @click="selectNumber">1</button>
-            <button value="1" @click="selectNumber">1</button>
-            <button @click="sum">+</button>
-            <button @click="subtract">-</button>
-            <button @click="operation">=</button>
-            <div id="result">{{ resultado }}</div>
+            <div id="result" class="calculator-children__result">{{ resultado }}</div>
+            <div class="row">
+              <div class="col-4 calculator-children__button-container" v-for="index in 9" :key="index">
+                <button class="calculator-children__buton" :value="index" @click="selectNumber">{{ index }}</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4 calculator-children__button-container">
+                <button class="calculator-children__buton" @click="sum">+</button>
+              </div>
+              <div class="col-4 calculator-children__button-container">
+                <button class="calculator-children__buton" value="0" @click="selectNumber">0</button>
+              </div>
+              <div class="col-4 calculator-children__button-container">
+                <button class="calculator-children__buton" @click="subtract">-</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 calculator-children__button-container">
+                <button class="calculator-children__buton button-primary" @click="operation">=</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -49,37 +59,38 @@ export default defineComponent({
     }
   },
   methods: {
+    passArrayNumToIntNum (array) {
+      let numeroUno = ''
+      for (let i = 0; i < array.length; i++) {
+        numeroUno += array[i]
+      }
+      return parseInt(numeroUno)
+    },
     selectNumber (event) {
       const value = event.target.value
       if (!this.yaDioClick) {
         this.calculator.numeroUno.push(value)
+        this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno)
       } else {
         this.calculator.numeroDos.push(value)
+        this.resultado = this.passArrayNumToIntNum(this.calculator.numeroDos)
       }
     },
     sum () {
       this.yaDioClick = true
       this.operator = '+'
+      this.resultado += this.operator
     },
     subtract () {
       this.yaDioClick = true
       this.operator = '-'
+      this.resultado += this.operator
     },
     operation () {
-      let numeroUno = ''
-      for (let i = 0; i < this.calculator.numeroUno.length; i++) {
-        numeroUno += this.calculator.numeroUno[i]
-      }
-      const numeroUnoInt = parseInt(numeroUno)
-      let numeroDos = ''
-      for (let i = 0; i < this.calculator.numeroDos.length; i++) {
-        numeroDos += this.calculator.numeroDos[i]
-      }
-      const numeroDosInt = parseInt(numeroDos)
       if (this.operator === '+') {
-        this.resultado = numeroUnoInt + numeroDosInt
+        this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) + this.passArrayNumToIntNum(this.calculator.numeroDos)
       } else if (this.operator === '-') {
-        this.resultado = numeroUnoInt - numeroDosInt
+        this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) - this.passArrayNumToIntNum(this.calculator.numeroDos)
       }
       const nuevoNumero1 = []
       const result = this.resultado.toString()
@@ -94,7 +105,7 @@ export default defineComponent({
 </script>
 <style lang="scss">
 .calculator {
-  background: #D4AD0F;
+  background: black;
   height: 100vh;
   width: 100%;
   position: relative;
@@ -105,7 +116,33 @@ export default defineComponent({
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
   background: white;
-  padding: 10px;
   border-radius: 10px;
+}
+.calculator-children__buton {
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  margin: 0;
+  border: 0;
+  font-weight: 500;
+  font-size: 20px;
+}
+.calculator-children__result {
+  background: #FF0000;
+  color: #FFF;
+  padding: 10px;
+  text-align: right;
+  font-size: 40px;
+  font-weight: 800;
+  border-radius: 10px 10px 0px 0px;
+}
+.calculator-children__button-container {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+.button-primary {
+  background: #FF0000;
+  color: #FFFFFF;
 }
 </style>
