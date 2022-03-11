@@ -91,37 +91,7 @@ export default defineComponent({
     },
     actAsIgual () {
       if (this.calculator.numeroDos.length === 0) this.calculator.numeroDos = ['0']
-      console.log('inicio con', this.passArrayNumToIntNum(this.calculator.numeroTres))
-      if (this.yaHizoOperacion) {
-        if (this.operator === '+') {
-          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroTres) + this.passArrayNumToIntNum(this.calculator.numeroDos)
-        } else if (this.operator === '-') {
-          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroTres) - this.passArrayNumToIntNum(this.calculator.numeroDos)
-        } else if (this.operator === '*') {
-          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroTres) * this.passArrayNumToIntNum(this.calculator.numeroDos)
-        } else if (this.operator === '/') {
-          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroTres) / this.passArrayNumToIntNum(this.calculator.numeroDos)
-        }
-      } else {
-        if (this.operator === '+') {
-          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) + this.passArrayNumToIntNum(this.calculator.numeroDos)
-        } else if (this.operator === '-') {
-          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) - this.passArrayNumToIntNum(this.calculator.numeroDos)
-        } else if (this.operator === '*') {
-          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) * this.passArrayNumToIntNum(this.calculator.numeroDos)
-        } else if (this.operator === '/') {
-          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) / this.passArrayNumToIntNum(this.calculator.numeroDos)
-        }
-      }
-      const resultInArray = []
-      const result = this.resultado.toString()
-      for (let i = 0; i < result.length; i++) {
-        resultInArray.push(result[i])
-      }
-      this.calculator.numeroTres = resultInArray
-      this.calculator.numeroDos = []
-      console.log('termino con', this.passArrayNumToIntNum(this.calculator.numeroTres))
-      this.yaHizoOperacion = true
+      this.igual()
     },
     sum () {
       this.saveHistorial('+')
