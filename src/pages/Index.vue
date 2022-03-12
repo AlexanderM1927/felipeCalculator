@@ -15,24 +15,29 @@
             </div>
             <div class="row">
               <div class="col-4 calculator-children__button-container">
-                <button class="calculator-children__buton" @click="sum">+</button>
+                <button class="calculator-children__buton" @click="sum" v-if="!disabled">+</button>
+                <button class="calculator-children__buton" @click="sum" disabled v-else>+</button>
               </div>
               <div class="col-4 calculator-children__button-container">
                 <button class="calculator-children__buton" value="0" @click="selectNumber">0</button>
               </div>
               <div class="col-4 calculator-children__button-container">
-                <button class="calculator-children__buton" @click="subtract">-</button>
+                <button class="calculator-children__buton" @click="subtract" v-if="!disabled">-</button>
+                <button class="calculator-children__buton" @click="subtract" disabled v-else>-</button>
               </div>
             </div>
             <div class="row">
               <div class="col-4 calculator-children__button-container">
-                <button class="calculator-children__buton" @click="multiplier">*</button>
+                <button class="calculator-children__buton" @click="multiplier" v-if="!disabled">*</button>
+                <button class="calculator-children__buton" @click="multiplier" disabled v-else>*</button>
               </div>
               <div class="col-4 calculator-children__button-container">
-                <button class="calculator-children__buton button-primary" @click="igual">=</button>
+                <button class="calculator-children__buton button-primary" @click="igual" v-if="!disabled">=</button>
+                <button class="calculator-children__buton button-primary" @click="igual" disabled v-else>=</button>
               </div>
               <div class="col-4 calculator-children__button-container">
-                <button class="calculator-children__buton" @click="divisor">/</button>
+                <button class="calculator-children__buton" @click="divisor" v-if="!disabled">/</button>
+                <button class="calculator-children__buton" @click="divisor" disabled v-else>/</button>
               </div>
             </div>
           </div>
@@ -55,7 +60,9 @@ export default defineComponent({
       operator: '+',
       yaDioClick: false,
       historial: '',
-      yaHizoOperacion: false
+      yaHizoOperacion: false,
+      lastOperator: null,
+      disabled: false
     }
   },
   setup () {
@@ -85,52 +92,81 @@ export default defineComponent({
         this.calculator.numeroDos.push(value)
         this.resultado = this.passArrayNumToIntNum(this.calculator.numeroDos)
       }
+      this.disabled = false
     },
-    saveHistorial (operation) {
-      this.historial += this.passArrayNumToIntNum(this.calculator.numeroUno) + operation
+    saveHistorial () {
+      if (!this.yaHizoOperacion) {
+        this.historial += this.passArrayNumToIntNum(this.calculator.numeroUno) + this.operator
+      } else {
+        this.historial += this.passArrayNumToIntNum(this.calculator.numeroDos) + this.operator
+      }
     },
     actAsIgual () {
-      if (this.calculator.numeroDos.length === 0) this.calculator.numeroDos = ['0']
-      this.igual()
+      if (this.yaHizoOperacion) {
+        this.igual()
+      } else {
+        this.yaHizoOperacion = true
+        this.lastOperator = this.operator
+      }
+    },
+    deshabilitarTodasLasOperaciones () {
+      this.disabled = true
     },
     sum () {
-      this.saveHistorial('+')
       this.yaDioClick = true
       this.operator = '+'
       this.resultado += this.operator
+      this.saveHistorial()
       this.actAsIgual()
+      this.deshabilitarTodasLasOperaciones()
     },
     subtract () {
-      this.saveHistorial('-')
       this.yaDioClick = true
       this.operator = '-'
       this.resultado += this.operator
+      this.saveHistorial()
       this.actAsIgual()
+      this.deshabilitarTodasLasOperaciones()
     },
     multiplier () {
-      this.saveHistorial('*')
       this.yaDioClick = true
       this.operator = '*'
       this.resultado += this.operator
+      this.saveHistorial()
       this.actAsIgual()
+      this.deshabilitarTodasLasOperaciones()
     },
     divisor () {
-      this.saveHistorial('/')
       this.yaDioClick = true
       this.operator = '/'
       this.resultado += this.operator
+      this.saveHistorial()
       this.actAsIgual()
+      this.deshabilitarTodasLasOperaciones()
     },
     igual () {
-      if (this.operator === '+') {
-        this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) + this.passArrayNumToIntNum(this.calculator.numeroDos)
-      } else if (this.operator === '-') {
-        this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) - this.passArrayNumToIntNum(this.calculator.numeroDos)
-      } else if (this.operator === '*') {
-        this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) * this.passArrayNumToIntNum(this.calculator.numeroDos)
-      } else if (this.operator === '/') {
-        this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) / this.passArrayNumToIntNum(this.calculator.numeroDos)
+      if (this.lastOperator === null) {
+        if (this.operator === '+') {
+          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) + this.passArrayNumToIntNum(this.calculator.numeroDos)
+        } else if (this.operator === '-') {
+          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) - this.passArrayNumToIntNum(this.calculator.numeroDos)
+        } else if (this.operator === '*') {
+          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) * this.passArrayNumToIntNum(this.calculator.numeroDos)
+        } else if (this.operator === '/') {
+          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) / this.passArrayNumToIntNum(this.calculator.numeroDos)
+        }
+      } else {
+        if (this.lastOperator === '+') {
+          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) + this.passArrayNumToIntNum(this.calculator.numeroDos)
+        } else if (this.lastOperator === '-') {
+          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) - this.passArrayNumToIntNum(this.calculator.numeroDos)
+        } else if (this.lastOperator === '*') {
+          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) * this.passArrayNumToIntNum(this.calculator.numeroDos)
+        } else if (this.lastOperator === '/') {
+          this.resultado = this.passArrayNumToIntNum(this.calculator.numeroUno) / this.passArrayNumToIntNum(this.calculator.numeroDos)
+        }
       }
+      this.lastOperator = this.operator
       const resultInArray = []
       const result = this.resultado.toString()
       for (let i = 0; i < result.length; i++) {
